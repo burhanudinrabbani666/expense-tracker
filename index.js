@@ -27,8 +27,15 @@ const [action] = program.args;
 if (action === "add") handleAddExpense(description, amount);
 if (action === "update") handleUpdate(id, amount, description);
 if (action === "delete") handleDelete(id);
-if (action === "view") handleView();
+if (action === "list") handleList();
 if (action === "summary") handleSummary(month);
+
+// -------------------------------------------------------------------
+
+function getData() {
+  const data = fs.readFileSync(pathFile);
+  return JSON.parse(data);
+}
 
 function handleAddExpense(description, amount) {
   if (!description || !amount) {
@@ -36,8 +43,7 @@ function handleAddExpense(description, amount) {
     return;
   }
 
-  const data = fs.readFileSync(pathFile);
-  const expenseData = JSON.parse(data);
+  const expenseData = getData();
 
   const newExpense = {
     id: expenseData.length > 0 ? expenseData.at(-1).id + 1 : 1,
@@ -61,12 +67,24 @@ function handleUpdate(id, amount, description) {
 }
 
 function handleDelete(id) {
-  console.log(id);
+  if (!id) return console.log("Require id");
+
+  const expenseData = getData();
+
+  if (expenseData.length < 0)
+    return console.log("You dont have expense to track!");
+
+  const newExpenseData = expenseData.filter((expense) => expense.id !== id);
+
+  fs.writeFileSync(pathFile, JSON.stringify(newExpenseData), (error) => {
+    if (error) return console.log(error);
+  });
+
+  return;
 }
 
-function handleView() {
-  const data = fs.readFileSync(pathFile);
-  const expenseData = JSON.parse(data);
+function handleList() {
+  const expenseData = getData();
 
   if (expenseData.length < 0)
     return console.log("You dont have expense to track!");
@@ -75,5 +93,42 @@ function handleView() {
 }
 
 function handleSummary(month) {
-  console.log(month);
+  const expenseData = getData();
+
+  if (expenseData.length === 0) return console.log(`You dont have summary yet`);
+
+  const monthArray = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const monthForSummary = monthArray[month - 1];
+  let summary;
+
+  if (month) {
+    const summaryOfMonth = expenseData.filter(
+      (expense) => new Date(expense.createdAt).getMonth() === month - 1,
+    );
+
+    if (summaryOfMonth.length === 0)
+      return console.log(`You not have expense in ${monthForSummary}`);
+
+    summary = summaryOfMonth.reduce((acc, curr) => acc + curr.amount, 0);
+
+    return console.log(`You'r summary in ${monthForSummary} is ${summary}`);
+  }
+
+  summary = expenseData.reduce((acc, curr) => acc + curr.amount, 0);
+
+  return console.log(`Your Summary is ${summary}`);
 }

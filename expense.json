@@ -1,8 +1,29 @@
 [
   {
-    "id": 2,
-    "expenseDescrption": "Buy-gundam",
-    "amount": 100,
+    "id": 1,
+    "expenseDescrption": "Buy-coffe",
+    "amount": 50,
+    "createdAt": "Feb 28, 2026",
+    "updatedAt": null
+  },
+  {
+    "id": 1,
+    "expenseDescrption": "Buy-coffe",
+    "amount": 50,
+    "createdAt": "Feb 28, 2026",
+    "updatedAt": null
+  },
+  {
+    "id": 1,
+    "expenseDescrption": "Buy-coffe",
+    "amount": 50,
+    "createdAt": "Feb 28, 2026",
+    "updatedAt": null
+  },
+  {
+    "id": 1,
+    "expenseDescrption": "Buy-coffe",
+    "amount": 50,
     "createdAt": "Feb 28, 2026",
     "updatedAt": null
   },
